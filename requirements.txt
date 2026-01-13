@@ -1,0 +1,14 @@
+torch>=1.12.0
+torchvision>=0.13.0
+numpy
+pandas
+scikit-learn
+matplotlib
+Pillow
+opencv-python
+tqdm
+Django>=4.2
+djangorestframework>=3.14
+django-cors-headers>=4.0
+Flask
+tensorflow
