@@ -5,6 +5,8 @@ import time
 from werkzeug.utils import secure_filename
 from PIL import Image
 import numpy as np
+from keras.models import load_model
+from keras.preprocessing import image
 
 app = Flask(__name__)
 
