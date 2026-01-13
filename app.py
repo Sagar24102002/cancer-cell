@@ -1,7 +1,19 @@
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime
 import os
+
+# Set TensorFlow log level to suppress info messages
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+from flask import Flask, render_template, request, jsonify
+from datetime import datetime
+import os
+
+# Set TensorFlow log level to suppress info messages
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 import time
+# ...import time
 from werkzeug.utils import secure_filename
 from PIL import Image
 import numpy as np
