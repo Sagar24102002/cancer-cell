@@ -7,7 +7,7 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
 
 # Define data directories
-data_dir = r'f:\cancer\data'  # Main data directory
+data_dir = 'about/data'  # Main data directory
 benign_dir = os.path.join(data_dir, 'benign')
 malignant_dir = os.path.join(data_dir, 'malignant')
 normal_dir = os.path.join(data_dir, 'normal')
@@ -102,6 +102,6 @@ history = model.fit(
 )
 
 # Save the model
-model.save('f:/cancer/breast_cancer_diagnosis_model.h5')
+model.save('breast_cancer_diagnosis_model.h5')
 
 print("Model training completed and saved!")
