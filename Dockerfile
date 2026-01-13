@@ -17,4 +17,5 @@ COPY . /app
 EXPOSE 5000
 
 # Define the entry point for the container
-CMD ["python", "app.py"]
+# Use gunicorn for production
+CMD gunicorn --bind 0.0.0.0:${PORT:-5000} app:app

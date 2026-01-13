@@ -5,6 +5,12 @@ import time
 from werkzeug.utils import secure_filename
 from PIL import Image
 import numpy as np
+import warnings
+
+# Suppress specific warnings
+warnings.filterwarnings('ignore', category=FutureWarning)
+warnings.filterwarnings('ignore', category=UserWarning)
+
 from keras.models import load_model
 from keras.preprocessing import image
 
@@ -128,4 +134,5 @@ def predict():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
