@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breast Cancer USG Image Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Breast Cancer USG Image Analysis</h1>
+        
+        <form id="predictionForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age" required min="0" max="150">
+            </div>
+
+            <div class="form-group">
+                <label for="sex">Sex:</label>
+                <select id="sex" name="sex" required>
+                    <option value="">Select Gender</option>
+                    <option value="female">Female</option>
+                    <option value="male">Male</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="mobile">Mobile Number:</label>
+                <input type="tel" id="mobile" name="mobile" required pattern="[0-9]{10}">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Upload USG Image:</label>
+                <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png" required>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" id="analyzeButton">Analyze Image</button>
+            </div>
+        </form>
+    </div>
+
+        <div id="result" class="result-container" style="display: none;">
+            <h2>Analysis Result</h2>
+            <div class="result-content">
+                <div class="patient-info">
+                    <p><strong>Patient Name:</strong> <span id="result-name"></span></p>
+                    <p><strong>Age:</strong> <span id="result-age"></span></p>
+                    <p><strong>Sex:</strong> <span id="result-sex"></span></p>
+                    <p><strong>Mobile:</strong> <span id="result-mobile"></span></p>
+                    <p><strong>Email:</strong> <span id="result-email"></span></p>
+                </div>
+                <div class="prediction-info">
+                    <p><strong>Prediction:</strong> <span id="result-prediction"></span></p>
+                    <p><strong>Confidence:</strong> <span id="result-confidence"></span></p>
+                    <p><strong>Processing Time:</strong> <span id="processing-time"></span></p>
+                </div>
+                <div class="analysis-container">
+                    <div class="image-preview">
+                        <h3>Original Image</h3>
+                        <img id="result-image" src="" alt="Uploaded USG Image">
+                    </div>
+                    <div class="prediction-graph">
+                        <h3>Prediction Analysis</h3>
+                        <canvas id="predictionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

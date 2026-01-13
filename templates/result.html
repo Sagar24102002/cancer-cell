@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Result - Breast Cancer USG</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Detailed Analysis Result</h1>
+        
+        <div class="result-content">
+            <div class="patient-info">
+                <h2>Patient Information</h2>
+                <p><strong>Patient Name:</strong> {{ patient_name }}</p>
+                <p><strong>Age:</strong> {{ age }}</p>
+                <p><strong>Sex:</strong> {{ sex }}</p>
+                <p><strong>Email:</strong> {{ email }}</p>
+            </div>
+
+            <div class="processing-info">
+                <h2>Processing Details</h2>
+                <p><strong>Start Time:</strong> {{ start_time }}</p>
+                <p><strong>End Time:</strong> {{ end_time }}</p>
+                <p><strong>Processing Duration:</strong> {{ processing_time }} seconds</p>
+                <p><strong>Image Path:</strong> {{ image_path }}</p>
+            </div>
+
+            <div class="prediction-results">
+                <h2>Prediction Results</h2>
+                <div class="prediction-card">
+                    <p><strong>Diagnosis:</strong> 
+                        <span class="diagnosis 
+                            {{ 'malignant' if label == 'Malignant' else 
+                               'benign' if label == 'Benign' else 'normal' }}">
+                            {{ label }}
+                        </span>
+                    </p>
+                    <p><strong>Confidence:</strong> {{ "%.2f"|format(confidence * 100) }}%</p>
+                </div>
+            </div>
+
+            <div class="analysis-container">
+                <div class="image-analysis">
+                    <h2>Image Analysis</h2>
+                    <div class="image-comparison">
+                        <div class="original-image">
+                            <h3>Original Image</h3>
+                            <img src="{{ url_for('static', filename=original_image) }}" alt="Original USG Image">
+                        </div>
+                        <!-- Update the image controls section -->
+                        <div class="processed-image">
+                            <h3>Processed Image Analysis</h3>
+                            <div class="processed-image-container">
+                                <img src="{{ url_for('static', filename=processed_image) }}" alt="Processed USG Image" id="processedImg">
+                                <canvas id="highlightOverlay" class="highlight-overlay"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Add this script before the closing body tag -->
+                        <script>
+                        const processedImg = document.getElementById('processedImg');
+                        const canvas = document.getElementById('highlightOverlay');
+                        const ctx = canvas.getContext('2d');
+                        let highlightEnabled = true;
+                        
+                        function initializeCanvas() {
+                            canvas.width = processedImg.width;
+                            canvas.height = processedImg.height;
+                            drawHighlight();
+                        }
+                        
+                        function drawHighlight() {
+                            if (!highlightEnabled) {
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                return;
+                            }
+                        
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            
+                            // Draw region of interest
+                            ctx.fillStyle = 'rgba(231, 76, 60, 0.3)';
+                            ctx.strokeStyle = '#e74c3c';
+                            ctx.lineWidth = 2;
+                            
+                            // Get the detected region coordinates from Flask
+                            const regionData = {{ region_data|tojson }};
+                            
+                            regionData.forEach(region => {
+                                ctx.beginPath();
+                                ctx.rect(region.x, region.y, region.width, region.height);
+                                ctx.fill();
+                                ctx.stroke();
+                            });
+                        }
+                        
+                        function toggleHighlight() {
+                            highlightEnabled = !highlightEnabled;
+                            drawHighlight();
+                        }
+                        
+                        function toggleHeatmap() {
+                            if (!processedImg.dataset.originalSrc) {
+                                processedImg.dataset.originalSrc = processedImg.src;
+                                processedImg.src = "{{ url_for('static', filename=heatmap_image) }}";
+                            } else {
+                                processedImg.src = processedImg.dataset.originalSrc;
+                                delete processedImg.dataset.originalSrc;
+                            }
+                        }
+                        
+                        // Initialize canvas when image loads
+                        processedImg.onload = initializeCanvas;
+                        </script>
+                    </div>
+                </div>
+
+                <div class="prediction-visualization">
+                    <h2>Prediction Visualization</h2>
+                    <canvas id="predictionChart"></canvas>
+                </div>
+            </div>
+
+            <div class="actions">
+                <a href="/" class="button">Analyze Another Image</a>
+                <button onclick="window.print()" class="button">Print Report</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Create prediction visualization chart
+        const ctx = document.getElementById('predictionChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Benign', 'Malignant', 'Normal'],
+                datasets: [{
+                    label: 'Prediction Confidence',
+                    data: [
+                        {{ confidence_scores.benign * 60 }},
+                        {{ confidence_scores.malignant * 100 }},
+                        {{ confidence_scores.normal * 20 }}
+                    ],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.6)',  // Benign - Green
+                        'rgba(255, 99, 132, 0.6)',  // Malignant - Red
+                        'rgba(54, 162, 235, 0.6)'   // Normal - Blue
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Confidence (%)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

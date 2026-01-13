@@ -1,0 +1,12 @@
+f:\cancer\
+│
+├── breast_cancer_diagnosis_model.h5    # Your trained model
+├── app.py                             # Flask application
+│
+├── static/
+│   ├── uploads/                       # For uploaded images
+│   ├── style.css                      # CSS file
+│   └── script.js                      # JavaScript file
+│
+└── templates/
+    └── index.html                     # HTML template
